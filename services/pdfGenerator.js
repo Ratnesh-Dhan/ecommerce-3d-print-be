@@ -2,1100 +2,186 @@ const PDFDocument = require("pdfkit");
 const fs = require("fs");
 const path = require("path");
 
-
 const generatePDF = (data) => {
-
     return new Promise((resolve, reject) => {
-
         console.log("PDF GENERATOR STARTED");
-        console.log(data);
 
         const fileName = `${data.quoteId}.pdf`;
-
         const folderPath = path.join(__dirname, "../quotes");
+        const logoPath = path.join(__dirname, "../assets/threeditron-logo.png");
 
-
-        // create folder if not exist
         if (!fs.existsSync(folderPath)) {
-            fs.mkdirSync(folderPath);
+            fs.mkdirSync(folderPath, { recursive: true });
         }
 
-
         const filePath = path.join(folderPath, fileName);
-
-
-        // const doc = new PDFDocument();
-        const doc = new PDFDocument({
-            size: "A4",
-            margin: 50,
-        });
-
-
+        const doc = new PDFDocument({ size: "A4", margin: 50, bufferPages: true });
         const stream = fs.createWriteStream(filePath);
-
 
         doc.pipe(stream);
 
-        // Page dimensions
-        const pageWidth = doc.page.width;
-        const pageHeight = doc.page.height;
-
-        // Theme Colors
-        const PRIMARY = "#FFC107";
-        const DARK = "#111827";
-        const LIGHT = "#F3F4F6";
-        const TEXT = "#374151";
-
-        // ===========================
-        // HEADER
-        // ===========================
-
-        // Black Header
-        doc
-            .rect(0, 0, pageWidth, 95)
-            .fill(DARK);
-
-        // Company Name
-        doc
-            .fillColor(PRIMARY)
-            .font("Helvetica-Bold")
-            .fontSize(28)
-            .text("THREEDITRON", 40, 22);
-
-        // Subtitle
-        doc
-            .fillColor("white")
-            .font("Helvetica")
-            .fontSize(11)
-            .text("Professional 3D Printing & Rapid Prototyping", 42, 58);
-
-        // Right Side Title
-        doc
-            .fillColor(PRIMARY)
-            .font("Helvetica-Bold")
-            .fontSize(22)
-            .text("QUOTATION", 380, 30);
-
-        // Reset Color
-        doc.fillColor(TEXT);
-
-        let y = 120;
-
-        doc
-            .roundedRect(40, y, 515, 70, 6)
-            .fillAndStroke(LIGHT, "#DDDDDD");
-
-        doc.fillColor(TEXT);
-
-        doc
-            .font("Helvetica-Bold")
-            .fontSize(13)
-            .text("Company Information", 55, y + 10);
-
-        doc
-            .font("Helvetica")
-            .fontSize(10)
-            .text("THREEDITRON", 55, y + 32)
-            .text("Sidhgora, Jamshedpur, Jharkhand", 170, y + 32)
-            .text("+91 7209827299", 55, y + 48)
-            .text("www.threeditron.com", 170, y + 48);
-
-        y += 95;
-
-        doc
-            .font("Helvetica-Bold")
-            .fontSize(15)
-            .fillColor(DARK)
-            .text("Quotation Details", 40, y);
-
-        y += 28;
-
-        doc
-            .font("Helvetica")
-            .fontSize(11)
-            .fillColor(TEXT);
-
-        doc.text("Quotation ID", 50, y);
-        doc.text(":", 170, y);
-        doc.text(data.quoteId || "-", 190, y);
-
-        doc.text("Date", 330, y);
-        doc.text(":", 400, y);
-        doc.text(data.date || "-", 420, y);
-
-        y += 22;
-
-        doc.text("Time", 50, y);
-        doc.text(":", 170, y);
-        doc.text(data.time || "-", 190, y);
-
-        doc.text("Validity", 330, y);
-        doc.text(":", 400, y);
-        doc.text("7 Days", 420, y);
-
-        y += 28;
-
-        // Divider
-        doc
-            .moveTo(40, y)
-            .lineTo(555, y)
-            .strokeColor("#D1D5DB")
-            .stroke();
-
-        y += 20;
-
-        // ===========================
-        // CUSTOMER DETAILS
-        // ===========================
-
-        doc
-            .roundedRect(40, y, 515, 110, 6)
-            .fillAndStroke("#FFFFFF", "#DDDDDD");
-
-        doc
-            .fillColor(DARK)
-            .font("Helvetica-Bold")
-            .fontSize(14)
-            .text("Customer Details", 55, y + 12);
-
-        doc
-            .font("Helvetica")
-            .fontSize(11)
-            .fillColor(TEXT);
-
-        doc.text("Name", 60, y + 40);
-        doc.text(":", 150, y + 40);
-        doc.text(data.name || "-", 170, y + 40);
-
-        doc.text("Phone", 60, y + 62);
-        doc.text(":", 150, y + 62);
-        doc.text(data.phone || "-", 170, y + 62);
-
-        doc.text("Email", 60, y + 84);
-        doc.text(":", 150, y + 84);
-        doc.text(data.email || "-", 170, y + 84);
-
-        y += 135;
-
-
-        // ===========================
-        // PRINT DETAILS
-        // ===========================
-
-        doc
-            .roundedRect(40, y, 515, 170, 6)
-            .fillAndStroke("#FFFFFF", "#DDDDDD");
-
-        doc
-            .fillColor(DARK)
-            .font("Helvetica-Bold")
-            .fontSize(14)
-            .text("Print Details", 55, y + 12);
-
-        doc
-            .font("Helvetica")
-            .fontSize(11)
-            .fillColor(TEXT);
-
-        let py = y + 40;
-
-        doc.text("Material", 60, py);
-        doc.text(":", 150, py);
-        doc.text(String(data.material), 170, py);
-
-        py += 22;
-
-        doc.text("Color", 60, py);
-        doc.text(":", 150, py);
-        doc.text(String(data.color), 170, py);
-
-        py += 22;
-
-        doc.text("Weight", 60, py);
-        doc.text(":", 150, py);
-        doc.text(`${data.weight} g`, 170, py);
-
-        py += 22;
-
-        doc.text("Quantity", 60, py);
-        doc.text(":", 150, py);
-        doc.text(String(data.quantity), 170, py);
-
-        py += 22;
-
-        doc.text("Infill", 60, py);
-        doc.text(":", 150, py);
-        doc.text(`${data.infill}%`, 170, py);
-
-        py += 22;
-
-        doc.text("Shipping", 60, py);
-        doc.text(":", 150, py);
-        doc.text(String(data.shipping), 170, py);
-
-        y += 195;
-
-
-        // ===========================
-        // PRICE BREAKDOWN
-        // ===========================
-
-        doc
-            .font("Helvetica-Bold")
-            .fontSize(15)
-            .fillColor(DARK)
-            .text("Price Breakdown", 40, y);
-
-        y += 30;
-
-
-        // Table Header
-
-        doc
-            .roundedRect(40, y, 515, 28, 4)
-            .fill(PRIMARY);
-
-        doc
-            .fillColor("black")
-            .font("Helvetica-Bold")
-            .fontSize(11);
-
-        doc.text("Description", 55, y + 8);
-
-        doc.text("Amount", 455, y + 8);
-
-        y += 28;
-
-
-        // Row 1
-
-        doc.rect(40, y, 515, 28).stroke("#DDDDDD");
-
-        doc.font("Helvetica").fillColor(TEXT);
-
-        doc.text("Material Cost", 55, y + 8);
-
-        doc.text("₹135", 455, y + 8);
-
-
-        // Row 2
-
-        y += 28;
-
-        doc.rect(40, y, 515, 28).stroke("#DDDDDD");
-
-        doc.text("Infill Adjustment", 55, y + 8);
-
-        doc.text("₹15", 455, y + 8);
-
-
-        // Row 3
-
-        y += 28;
-
-        doc.rect(40, y, 515, 28).stroke("#DDDDDD");
-
-        doc.text("Shipping Charges", 55, y + 8);
-
-        doc.text("₹20", 455, y + 8);
-
-
-        // Total Row
-
-        y += 40;
-
-        doc
-            .roundedRect(40, y, 515, 38, 5)
-            .fill(PRIMARY);
-
-        doc
-            .fillColor("black")
-            .font("Helvetica-Bold")
-            .fontSize(16);
-
-        doc.text("Grand Total", 55, y + 11);
-
-        doc.text("₹170", 430, y + 11);
-
-        y += 60;
-
-        // ===========================
-        // NOTES
-        // ===========================
-
-        doc
-            .roundedRect(40, y, 515, 90, 6)
-            .fillAndStroke("#FFFDF5", "#E5E7EB");
-
-        doc
-            .fillColor(DARK)
-            .font("Helvetica-Bold")
-            .fontSize(14)
-            .text("Important Notes", 55, y + 12);
-
-        doc
-            .font("Helvetica")
-            .fontSize(10)
-            .fillColor(TEXT)
-            .text("• This quotation is automatically generated based on the uploaded 3D model.", 60, y + 38)
-            .text("• Final pricing may vary after engineering inspection.", 60, y + 54)
-            .text("• Manufacturing starts only after payment confirmation.", 60, y + 70);
-
-        y += 110;
-
-
-        // ===========================
-        // TERMS & CONDITIONS
-        // ===========================
-
-        doc
-            .roundedRect(40, y, 515, 110, 6)
-            .fillAndStroke("#FFFFFF", "#DDDDDD");
-
-        doc
-            .fillColor(DARK)
-            .font("Helvetica-Bold")
-            .fontSize(14)
-            .text("Terms & Conditions", 55, y + 12);
-
-        doc
-            .font("Helvetica")
-            .fontSize(10)
-            .fillColor(TEXT)
-            .text("1. This quotation is valid for 7 days from the issue date.", 60, y + 38)
-            .text("2. Material colour is subject to stock availability.", 60, y + 56)
-            .text("3. Prices shown are estimated and may change after final inspection.", 60, y + 74)
-            .text("4. THREEDITRON reserves the right to revise quotations if required.", 60, y + 92);
-
-        y += 130;
-
-
-        // ===========================
-        // SIGNATURE SECTION
-        // ===========================
-
-        doc
-            .moveTo(370, y + 35)
-            .lineTo(530, y + 35)
-            .strokeColor("#999999")
-            .stroke();
-
-        doc
-            .font("Helvetica")
-            .fontSize(10)
-            .fillColor(TEXT)
-            .text("Authorized Signature", 390, y + 40);
-
-        y += 80;
-
-
-        // ===========================
-        // FOOTER
-        // ===========================
-
-        // Black Footer
-        doc
-            .rect(0, pageHeight - 80, pageWidth, 80)
-            .fill(DARK);
-
-        // Company Name
-        doc
-            .fillColor(PRIMARY)
-            .font("Helvetica-Bold")
-            .fontSize(16)
-            .text("THREEDITRON", 40, pageHeight - 65);
-
-        // Website
-        doc
-            .fillColor("white")
-            .font("Helvetica")
-            .fontSize(10)
-            .text("www.threeditron.com", 40, pageHeight - 42);
-
-        // Email
-        doc
-            .text("threeditron.1005@gmail.com", 220, pageHeight - 42);
-
-        // Phone
-        doc
-            .text("+91 7209827299", 430, pageHeight - 42);
-
-        // Copyright
-        doc
-            .fontSize(8)
-            .fillColor("#BBBBBB")
-            .text(
-                "© 2026 THREEDITRON | Professional 3D Printing & Rapid Prototyping",
-                40,
-                pageHeight - 20,
-                {
-                    align: "center",
-                    width: pageWidth - 80,
-                }
-            );
-
-        // // PDF CONTENT
-
-        // doc
-        //     .fontSize(22)
-        //     .text("THREEDITRON", {
-        //         align: "center"
-        //     });
-
-
-        // doc.moveDown();
-
-
-        // doc
-        //     .fontSize(16)
-        //     .text("3D Printing Quotation", {
-        //         align: "center"
-        //     });
-
-
-        // doc.moveDown(2);
-
-
-        // doc.fontSize(12);
-
-
-        // doc.text(`Quote ID : ${data.quoteId}`);
-        // doc.text(`Date : ${data.date}`);
-        // doc.text(`Time : ${data.time}`);
-
-
-        // doc.moveDown();
-
-
-        // doc.text(`Customer Name : ${data.name}`);
-        // doc.text(`Phone : ${data.phone}`);
-        // doc.text(`Email : ${data.email}`);
-
-
-        // doc.moveDown();
-
-
-        // doc.text("----- Print Details -----");
-
-
-        // doc.text(`Material : ${data.material}`);
-        // doc.text(`Color : ${data.color}`);
-        // doc.text(`Quantity : ${data.quantity}`);
-        // doc.text(`Weight : ${data.weight} g`);
-        // doc.text(`Infill : ${data.infill}%`);
-        // doc.text(`Shipping : ${data.shipping}`);
-
-
-        // doc.moveDown();
-
-
-        // doc.text("-------------------------");
-
-
-        // doc.fontSize(16)
-        // .font("Helvetica-Bold")
-        // .text(`Total Amount : ₹${data.totalPrice || "Calculated Later"}`);
-
+        // --- Theme Colors ---
+        const PRIMARY_COLOR = "#000000"; // Black
+        const ACCENT_COLOR = "#D4AF37"; // Gold
+        const TEXT_MAIN = "#333333";
+        const TEXT_MUTED = "#666666";
+        const BORDER_COLOR = "#E5E7EB";
+        const ALT_ROW_COLOR = "#F9FAFB";
+
+        const printText = (text, x, y, size, font, color, options = {}) => {
+            doc.fontSize(size).font(font).fillColor(color).text(text, x, y, options);
+        };
+
+        // ================= HEADER =================
+        if (fs.existsSync(logoPath)) {
+            doc.image(logoPath, 50, 45, { width: 90 });
+        } else {
+            // Text Logo Fallback
+            doc.rect(50, 45, 90, 40).fill(PRIMARY_COLOR);
+            printText("THREEDITRON", 55, 60, 12, "Helvetica-Bold", ACCENT_COLOR);
+        }
+
+        printText("QUOTATION", 400, 45, 24, "Helvetica-Bold", PRIMARY_COLOR, { align: "right", width: 145 });
+        printText(`Quote #: ${data.quoteId}`, 400, 75, 10, "Helvetica", TEXT_MAIN, { align: "right", width: 145 });
+        printText(`Date: ${data.date || new Date().toLocaleDateString()}`, 400, 90, 10, "Helvetica", TEXT_MAIN, { align: "right", width: 145 });
+
+        printText("THREEDITRON", 160, 45, 18, "Helvetica-Bold", PRIMARY_COLOR);
+        printText("Online 3D Printing & Rapid Prototyping", 160, 65, 10, "Helvetica", TEXT_MUTED);
+        printText("Phone: +91 9999999999 | Email: support@threeditron.com", 160, 80, 9, "Helvetica", TEXT_MUTED);
+        printText("Website: www.threeditron.com", 160, 95, 9, "Helvetica", TEXT_MUTED);
+        printText("GSTIN: 20AAAAA0000A1Z5", 160, 110, 9, "Helvetica", TEXT_MUTED);
+
+        doc.moveTo(50, 130).lineTo(545, 130).lineWidth(2).strokeColor(ACCENT_COLOR).stroke();
+
+        // ================= CUSTOMER DETAILS =================
+        let currentY = 150;
+        
+        doc.rect(50, currentY, 240, 90).fill(ALT_ROW_COLOR);
+        doc.rect(50, currentY, 240, 20).fill(PRIMARY_COLOR);
+        printText("CUSTOMER DETAILS", 60, currentY + 6, 10, "Helvetica-Bold", ACCENT_COLOR);
+        
+        currentY += 25;
+        printText(`Name: ${data.name || "N/A"}`, 60, currentY, 10, "Helvetica-Bold", TEXT_MAIN);
+        printText(`Phone: ${data.phone || "N/A"}`, 60, currentY + 15, 10, "Helvetica", TEXT_MAIN);
+        printText(`Email: ${data.email || "N/A"}`, 60, currentY + 30, 10, "Helvetica", TEXT_MAIN);
+        printText(`Address: ${data.address || "N/A"}`, 60, currentY + 45, 10, "Helvetica", TEXT_MAIN);
+
+        // ================= PROJECT DETAILS =================
+        currentY = 150;
+        doc.rect(305, currentY, 240, 90).fill(ALT_ROW_COLOR);
+        doc.rect(305, currentY, 240, 20).fill(PRIMARY_COLOR);
+        printText("PROJECT DETAILS", 315, currentY + 6, 10, "Helvetica-Bold", ACCENT_COLOR);
+        
+        currentY += 25;
+        printText(`Material: ${data.material || "N/A"}`, 315, currentY, 9, "Helvetica", TEXT_MAIN);
+        printText(`Color: ${data.color || "N/A"}`, 315, currentY + 15, 9, "Helvetica", TEXT_MAIN);
+        printText(`Weight: ${data.weight ? data.weight + "g" : "N/A"}`, 315, currentY + 30, 9, "Helvetica", TEXT_MAIN);
+        printText(`Infill: ${data.infill ? data.infill + "%" : "N/A"}`, 315, currentY + 45, 9, "Helvetica", TEXT_MAIN);
+        printText(`Quantity: ${data.quantity || 1}`, 430, currentY, 9, "Helvetica", TEXT_MAIN);
+        printText(`Shipping: ${data.shipping || "N/A"}`, 430, currentY + 15, 9, "Helvetica", TEXT_MAIN);
+
+        // ================= PRICING TABLE =================
+        currentY = 270;
+        const col1 = 50, col2 = 300, col3 = 400, col4 = 480;
+        
+        doc.rect(50, currentY, 495, 20).fill(PRIMARY_COLOR);
+        printText("Description", col1 + 10, currentY + 6, 10, "Helvetica-Bold", ACCENT_COLOR);
+        printText("Rate (INR)", col2, currentY + 6, 10, "Helvetica-Bold", ACCENT_COLOR);
+        printText("Qty", col3, currentY + 6, 10, "Helvetica-Bold", ACCENT_COLOR);
+        printText("Amount (INR)", col4, currentY + 6, 10, "Helvetica-Bold", ACCENT_COLOR);
+        
+        currentY += 25;
+        const subtotal = Number(data.subtotal || data.totalPrice || 0);
+        const qty = Number(data.quantity || 1);
+        const rate = (subtotal / qty).toFixed(2);
+        const shippingCost = 0; // Or from data if available
+        const gst = subtotal * 0.18;
+        const grandTotal = subtotal + gst + shippingCost;
+
+        const tableItems = [
+            { desc: `3D Printing Service - ${data.material || "Standard"}`, rate: rate, qty: qty, amt: subtotal.toFixed(2) },
+            { desc: "Post Processing", rate: "Included", qty: "-", amt: "0.00" },
+            { desc: `Shipping (${data.shipping || "Standard"})`, rate: shippingCost.toFixed(2), qty: 1, amt: shippingCost.toFixed(2) },
+            { desc: "GST (18%)", rate: "-", qty: "-", amt: gst.toFixed(2) }
+        ];
+
+        tableItems.forEach((item, index) => {
+            if (index % 2 === 0) doc.rect(50, currentY - 5, 495, 20).fill(ALT_ROW_COLOR);
+            printText(item.desc, col1 + 10, currentY, 9, "Helvetica", TEXT_MAIN);
+            printText(item.rate, col2, currentY, 9, "Helvetica", TEXT_MAIN);
+            printText(item.qty.toString(), col3, currentY, 9, "Helvetica", TEXT_MAIN);
+            printText(item.amt, col4, currentY, 9, "Helvetica", TEXT_MAIN);
+            currentY += 20;
+        });
+
+        doc.moveTo(50, currentY).lineTo(545, currentY).lineWidth(1).strokeColor(BORDER_COLOR).stroke();
+        currentY += 10;
+        
+        doc.rect(380, currentY - 5, 165, 30).fill(ACCENT_COLOR);
+        printText("GRAND TOTAL", 390, currentY + 5, 12, "Helvetica-Bold", PRIMARY_COLOR);
+        printText(`Rs ${grandTotal.toFixed(2)}`, 470, currentY + 5, 12, "Helvetica-Bold", PRIMARY_COLOR);
+
+        // ================= SUMMARY BOX =================
+        currentY += 50;
+        doc.rect(50, currentY, 200, 80).lineWidth(1).strokeColor(BORDER_COLOR).stroke();
+        printText("SUMMARY", 60, currentY + 10, 10, "Helvetica-Bold", PRIMARY_COLOR);
+        printText("Payment Status:", 60, currentY + 30, 9, "Helvetica", TEXT_MUTED);
+        printText("Pending", 150, currentY + 30, 9, "Helvetica-Bold", TEXT_MAIN);
+        printText("Quotation Validity:", 60, currentY + 45, 9, "Helvetica", TEXT_MUTED);
+        printText("7 Days", 150, currentY + 45, 9, "Helvetica-Bold", TEXT_MAIN);
+        printText("Est. Delivery:", 60, currentY + 60, 9, "Helvetica", TEXT_MUTED);
+        printText("3-5 Business Days", 150, currentY + 60, 9, "Helvetica-Bold", TEXT_MAIN);
+
+        // ================= TERMS & CONDITIONS =================
+        currentY += 100;
+        printText("Terms & Conditions:", 50, currentY, 11, "Helvetica-Bold", PRIMARY_COLOR);
+        doc.moveTo(50, currentY + 15).lineTo(170, currentY + 15).lineWidth(2).strokeColor(ACCENT_COLOR).stroke();
+        currentY += 25;
+        
+        const terms = [
+            "1. This quotation is valid for 7 days from the date of issue.",
+            "2. Production commences only upon 100% advance payment or approved PO.",
+            "3. Final cost may vary slightly based on actual material consumption during slicing.",
+            "4. Threeditron ensures high-quality prints, but typical FDM layer lines will be visible.",
+            "5. Delivery timelines are estimates and subject to machine availability.",
+            "6. Due to the custom nature of 3D printing, refunds/returns are not permitted once production begins."
+        ];
+        
+        terms.forEach(term => {
+            printText(term, 50, currentY, 9, "Helvetica", TEXT_MUTED);
+            currentY += 15;
+        });
+
+        // ================= FOOTER & PAGING =================
+        const pages = doc.bufferedPageRange();
+        for (let i = 0; i < pages.count; i++) {
+            doc.switchToPage(i);
+            const bottom = doc.page.height - 80;
+            
+            doc.moveTo(50, bottom).lineTo(545, bottom).lineWidth(1).strokeColor(BORDER_COLOR).stroke();
+            
+            // QR Code Placeholder
+            doc.rect(50, bottom + 10, 40, 40).lineWidth(1).strokeColor(BORDER_COLOR).stroke();
+            printText("SCAN", 58, bottom + 25, 8, "Helvetica", TEXT_MUTED);
+
+            printText("www.threeditron.com", 110, bottom + 15, 9, "Helvetica-Bold", PRIMARY_COLOR);
+            printText("support@threeditron.com | +91 9999999999", 110, bottom + 28, 9, "Helvetica", TEXT_MUTED);
+            printText("This is a computer-generated quotation and does not require a signature.", 110, bottom + 41, 8, "Helvetica-Oblique", TEXT_MUTED);
+            
+            printText(`Page ${i + 1} of ${pages.count}`, 495, bottom + 25, 9, "Helvetica", TEXT_MUTED);
+        }
 
         doc.end();
 
-
-
-        // stream.on("finish", () => {
-        //     console.log("PDF SAVED:", filePath);
-        //     resolve(filePath);
-
-        // });
-
+        stream.on("finish", () => {
+            console.log("PDF SAVED:", filePath);
+            resolve(filePath);
+        });
 
         stream.on("error", (err) => {
             reject(err);
         });
-
-
     });
-
 };
 
-
 module.exports = generatePDF;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const PDFDocument = require("pdfkit");
-// const fs = require("fs");
-// const path = require("path");
-
-
-// const generatePDF = (data) => {
-
-//     return new Promise((resolve, reject) => {
-
-
-//         console.log("PDF GENERATOR STARTED");
-//         console.log(data);
-
-
-
-//         const fileName = `${data.quoteId}.pdf`;
-
-
-//         const folderPath = path.join(
-//             __dirname,
-//             "../quotes"
-//         );
-
-
-//         const logoPath = path.join(
-//             __dirname,
-//             "../assets/threeditron-logo.png"
-//         );
-
-
-
-//         // Create quotes folder
-
-//         if (!fs.existsSync(folderPath)) {
-//             fs.mkdirSync(folderPath);
-//         }
-
-
-
-//         const filePath = path.join(
-//             folderPath,
-//             fileName
-//         );
-
-
-
-//         const doc = new PDFDocument({
-
-//             size: "A4",
-//             margin: 50
-
-//         });
-
-
-
-//         const stream = fs.createWriteStream(filePath);
-
-
-//         doc.pipe(stream);
-
-
-
-
-//         /*
-//         =================================
-//         HEADER
-//         =================================
-//         */
-
-
-//         if (fs.existsSync(logoPath)) {
-
-//             doc.image(
-//                 logoPath,
-//                 50,
-//                 45,
-//                 {
-//                     width: 90
-//                 }
-//             );
-
-//         }
-
-
-
-//         doc
-//             .fontSize(22)
-//             .font("Helvetica-Bold")
-//             .text(
-//                 "THREEDITRON",
-//                 170,
-//                 45
-//             );
-
-
-
-//         doc
-//             .fontSize(10)
-//             .font("Helvetica")
-//             .text(
-//                 `
-// 3D Printing & Rapid Prototyping Solutions
-
-// GSTIN : YOUR_GST_NUMBER
-// Jamshedpur, Jharkhand, India
-
-// Email : support@threeditron.com
-// Website : www.threeditron.com
-// `,
-//                 170,
-//                 75
-//             );
-
-
-
-
-//         doc
-//             .moveTo(50, 150)
-//             .lineTo(545, 150)
-//             .stroke();
-
-
-
-
-//         /*
-//         =================================
-//         TITLE
-//         =================================
-//         */
-
-
-//         doc.moveDown(3);
-
-
-//         doc
-//             .fontSize(18)
-//             .font("Helvetica-Bold")
-//             .text(
-//                 "3D PRINTING QUOTATION",
-//                 {
-//                     align: "center"
-//                 }
-//             );
-
-
-//         doc.moveDown(2);
-
-
-
-
-//         /*
-//         =================================
-//         QUOTE INFORMATION
-//         =================================
-//         */
-
-
-//         doc
-//             .fontSize(12)
-//             .font("Helvetica-Bold")
-//             .text(
-//                 "Quotation Details"
-//             );
-
-
-//         doc.moveDown(0.5);
-
-
-//         doc
-//             .font("Helvetica")
-//             .fontSize(11)
-//             .text(
-//                 `
-// Quote ID        : ${data.quoteId}
-// Generated Date  : ${data.date}
-// Generated Time  : ${data.time}
-// `
-//             );
-
-
-
-//         doc.moveDown(1);
-
-
-
-
-//         /*
-//         =================================
-//         CUSTOMER DETAILS
-//         =================================
-//         */
-
-
-//         doc
-//             .font("Helvetica-Bold")
-//             .fontSize(12)
-//             .text(
-//                 "Customer Information"
-//             );
-
-
-//         doc.moveDown(0.5);
-
-
-
-//         doc
-//             .font("Helvetica")
-//             .fontSize(11)
-//             .text(
-//                 `
-// Customer Name : ${data.name}
-// Phone         : ${data.phone}
-// Email         : ${data.email}
-// `
-//             );
-
-
-
-//         doc.moveDown(1.5);
-
-
-
-
-//         /*
-//         =================================
-//         PRINT DETAILS TABLE
-//         =================================
-//         */
-
-
-
-//         doc
-//             .font("Helvetica-Bold")
-//             .fontSize(12)
-//             .text(
-//                 "Print Specifications"
-//             );
-
-
-//         doc.moveDown(0.5);
-
-
-
-//         const tableX = 50;
-//         let y = doc.y;
-
-
-//         const rowHeight = 25;
-
-
-
-//         function createRow(title, value) {
-
-
-//             doc
-//                 .rect(
-//                     tableX,
-//                     y,
-//                     495,
-//                     rowHeight
-//                 )
-//                 .stroke();
-
-
-
-//             doc
-//                 .font("Helvetica-Bold")
-//                 .fontSize(10)
-//                 .text(
-//                     title,
-//                     tableX + 10,
-//                     y + 8
-//                 );
-
-
-
-//             doc
-//                 .font("Helvetica")
-//                 .text(
-//                     value,
-//                     tableX + 200,
-//                     y + 8
-//                 );
-
-
-//             y += rowHeight;
-
-//         }
-
-
-
-
-//         createRow(
-//             "Material",
-//             data.material || "-"
-//         );
-
-
-//         createRow(
-//             "Color",
-//             data.color || "-"
-//         );
-
-
-//         createRow(
-//             "Quantity",
-//             data.quantity || "-"
-//         );
-
-
-//         createRow(
-//             "Weight",
-//             `${data.weight || 0} grams`
-//         );
-
-
-//         createRow(
-//             "Infill",
-//             `${data.infill || 0}%`
-//         );
-
-
-//         createRow(
-//             "Shipping",
-//             data.shipping || "-"
-//         );
-
-
-
-//         doc.moveDown(2);
-
-
-
-
-//         /*
-//         =================================
-//         PRICE DETAILS
-//         =================================
-//         */
-
-
-
-//         doc
-//             .fontSize(12)
-//             .font("Helvetica-Bold")
-//             .text(
-//                 "Price Summary"
-//             );
-
-
-//         doc.moveDown(0.5);
-
-
-
-//         const subtotal =
-//             Number(data.subtotal || data.totalPrice || 0);
-
-
-
-//         const gst =
-//             Number(data.gst || subtotal * 0.18);
-
-
-
-//         const grandTotal =
-//             subtotal + gst;
-
-
-
-
-//         doc
-//             .font("Helvetica")
-//             .fontSize(11)
-//             .text(
-//                 `
-// Printing Cost       : ₹${subtotal.toFixed(2)}
-
-// GST (18%)           : ₹${gst.toFixed(2)}
-
-// --------------------------------------
-
-// Grand Total         : ₹${grandTotal.toFixed(2)}
-// `
-//             );
-
-
-
-//         doc.moveDown(2);
-
-
-
-
-//         /*
-//         =================================
-//         TERMS
-//         =================================
-//         */
-
-
-//         doc
-//             .font("Helvetica-Bold")
-//             .fontSize(12)
-//             .text(
-//                 "Terms & Conditions"
-//             );
-
-
-//         doc.moveDown(0.5);
-
-
-
-//         doc
-//             .font("Helvetica")
-//             .fontSize(10)
-//             .text(
-//                 `
-// • Quotation validity: 7 days from the date of issue.
-
-// • Final cost may vary depending on design complexity.
-
-// • Production will start after customer approval.
-
-// • Custom modifications may include additional charges.
-
-// • Delivery timeline depends on order quantity.
-// `
-//             );
-
-
-
-
-//         doc.moveDown(2);
-
-
-
-
-//         /*
-//         =================================
-//         FOOTER
-//         =================================
-//         */
-
-
-
-//         doc
-//             .fontSize(10)
-//             .font("Helvetica-Bold")
-//             .text(
-//                 "Thank you for choosing THREEDITRON",
-//                 {
-//                     align: "center"
-//                 }
-//             );
-
-
-
-//         doc
-//             .fontSize(9)
-//             .font("Helvetica")
-//             .text(
-//                 `
-// THREEDITRON
-// GST Registered 3D Printing Service
-
-// www.threeditron.com
-// support@threeditron.com
-// `,
-//                 {
-//                     align: "center"
-//                 }
-//             );
-
-
-
-
-//         doc.end();
-
-
-
-
-//         stream.on(
-//             "finish",
-//             () => {
-
-//                 console.log(
-//                     "PDF SAVED:",
-//                     filePath
-//                 );
-
-
-//                 resolve(filePath);
-
-//             }
-//         );
-
-
-
-//         stream.on(
-//             "error",
-//             (err) => {
-
-//                 reject(err);
-
-//             }
-//         );
-
-
-
-//     });
-
-// };
-
-
-
-// module.exports = generatePDF;
