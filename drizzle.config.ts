@@ -1,4 +1,4 @@
-import { defineConfig } from "drizzle-kit";
+const { defineConfig } = require("drizzle-kit");
 
 export default defineConfig({
   schema: "./src/db/schema.js",
