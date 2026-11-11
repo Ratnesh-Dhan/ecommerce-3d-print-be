@@ -5,9 +5,9 @@ const authenticate = async (req, res, next) => {
   try {
     console.log("authenticating user");
     const token = req.cookies?.accessToken;
-
     if (!token) {
       return res.status(401).json({
+        success: false,
         message: "Authentication required",
       });
     }
@@ -18,6 +18,7 @@ const authenticate = async (req, res, next) => {
 
     if (!user) {
       return res.status(401).json({
+        success: false,
         message: "User not found",
       });
     }
@@ -27,6 +28,7 @@ const authenticate = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json({
+      success: false,
       message: "Invalid or expired token",
     });
   }
@@ -35,12 +37,14 @@ const authenticate = async (req, res, next) => {
 const requireAdmin = async (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
+      success: false,
       message: "Authentication required",
     });
   }
 
   if (req.user.role !== "admin") {
     return res.status(403).json({
+      success: false,
       message: "Admin access required",
     });
   }

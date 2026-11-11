@@ -14,7 +14,7 @@ const login = async (req, res) => {
 
     if (!user) {
       return res.status(401).json({
-        message: "Invalid credentials",
+        message: "User not found.",
       });
     }
 
@@ -29,7 +29,6 @@ const login = async (req, res) => {
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-
     await updateUserLastLogin(user.id);
 
     res.cookie("accessToken", token, {
@@ -59,6 +58,8 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
+  console.log("Raw cookie header:", !!req.headers.cookie);
+  console.log("Parsed cookies:", req.cookies);
   res.clearCookie("accessToken", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
