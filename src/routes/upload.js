@@ -1,12 +1,12 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import r2 from "../config/r2Client.js";
+import { v4 as uuid } from "uuid";
+import { addRow } from "../services/googleSheet.js";
+import { generateQuoteId } from "../services/quoteId.js";
 
-const { PutObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-const r2 = require("../config/r2Client");
-const { v4: uuid } = require("uuid");
-const { addRow } = require("../services/googleSheet");
-const { generateQuoteId } = require("../services/quoteId");
+const router = express.Router();
 
 // Test Route
 router.get("/test", (req, res) => {
@@ -97,4 +97,4 @@ router.post("/confirm", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

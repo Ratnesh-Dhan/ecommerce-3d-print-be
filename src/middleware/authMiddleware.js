@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { getUserById } = require("../db/queries");
+import jwt from "jsonwebtoken";
+import { getUserById } from "../db/queries.js";
 
 const authenticate = async (req, res, next) => {
   try {
@@ -53,7 +53,4 @@ const requireAdmin = async (req, res, next) => {
   next();
 };
 
-module.exports = {
-  authenticate,
-  requireAdmin,
-};
+export { authenticate, requireAdmin };

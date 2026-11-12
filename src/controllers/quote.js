@@ -1,11 +1,11 @@
-const googleSheet = require("../services/googleSheet");
+import { addRow } from "../services/googleSheet.js";
 
-exports.saveQuote = async (req, res) => {
+export const saveQuote = async (req, res) => {
     try {
 
         console.log(req.body);
 
-        await googleSheet.addRow(req.body);
+        await addRow(req.body);
 
         res.json({
             success: true,

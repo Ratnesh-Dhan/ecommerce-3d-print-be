@@ -1,10 +1,10 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const {
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import {
   getUserByEmail,
   updateUserLastLogin,
   createUser,
-} = require("../../db/queries");
+} from "../../db/queries.js";
 
 const login = async (req, res) => {
   try {
@@ -121,8 +121,4 @@ const createNewUser = async (req, res) => {
   }
 };
 
-module.exports = {
-  login,
-  logout,
-  createNewUser,
-};
+export { login, logout, createNewUser };

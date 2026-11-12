@@ -10,6 +10,4 @@ function generateQuoteId() {
   return `THR-${year}${month}${day}-${random}`;
 }
 
-module.exports = {
-  generateQuoteId,
-};
+export { generateQuoteId };

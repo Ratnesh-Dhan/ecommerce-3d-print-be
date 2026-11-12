@@ -1,13 +1,14 @@
-const express = require("express");
+import express from "express";
+import { contact } from "../controllers/contact.js";
+import { getDesigns } from "../controllers/shop.js";
+import { home } from "../controllers/home.js";
+import { wakeme } from "../controllers/wakeme.js";
+
 const router = express.Router();
-const { contact } = require("../controllers/contact");
-const { getDesigns } = require("../controllers/shop");
-const { home } = require("../controllers/home");
-const { wakeme } = require("../controllers/wakeme");
 
 router.post("/contact", contact);
 router.get("/shop", getDesigns);
 router.get("/", home);
 router.get("/wakeup", wakeme);
 
-module.exports = router;
+export default router;

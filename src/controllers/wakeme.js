@@ -7,6 +7,4 @@ const wakeme = async (req, res) => {
   }
 };
 
-module.exports = {
-  wakeme,
-};
+export { wakeme };

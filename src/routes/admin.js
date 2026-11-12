@@ -1,6 +1,5 @@
-const { authenticate } = require("../middleware/authMiddleware");
-
-const express = require("express");
+import { authenticate } from "../middleware/authMiddleware.js";
+import express from "express";
 const router = express.Router();
 
 router.get("/me", authenticate, (req, res) => {
@@ -9,4 +8,4 @@ router.get("/me", authenticate, (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

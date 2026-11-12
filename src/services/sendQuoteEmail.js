@@ -1,4 +1,4 @@
-const transporter = require("./mailService");
+import transporter from "./mailService.js";
 
 async function sendQuoteEmail(data) {
   try {
@@ -66,13 +66,13 @@ async function sendQuoteEmail(data) {
     `;
 
     const info = await transporter.sendMail({
-      from: \`"THREEDITRON" <\${process.env.SMTP_USER}>\`,
+      from: `"THREEDITRON" <${process.env.SMTP_USER}>`,
       to: data.customerEmail || data.email,
-      subject: \`Your THREEDITRON Quote (\${data.quoteId})\`,
+      subject: `Your THREEDITRON Quote (${data.quoteId})`,
       html: htmlTemplate,
       attachments: [
         {
-          filename: \`\${data.quoteId}.pdf\`,
+          filename: `${data.quoteId}.pdf`,
           path: data.pdfPath,
         },
       ],
@@ -85,4 +85,4 @@ async function sendQuoteEmail(data) {
   }
 }
 
-module.exports = sendQuoteEmail;
+export default sendQuoteEmail;

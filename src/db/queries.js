@@ -1,6 +1,6 @@
-const { db } = require("./client");
-const { users } = require("./schema");
-const { eq, sql } = require("drizzle-orm");
+import { db } from "./client.js";
+import { users } from "./schema.js";
+import { eq, sql } from "drizzle-orm";
 
 const createUser = async (user) => {
   return await db.insert(users).values(user).returning();
@@ -29,7 +29,7 @@ const deleteUser = async (id) => {
   return await db.delete(users).where(eq(users.id, id));
 };
 
-module.exports = {
+export {
   createUser,
   getUserByEmail,
   getUserById,

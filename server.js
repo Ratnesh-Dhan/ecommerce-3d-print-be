@@ -1,12 +1,14 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const router = require("./src/routes/Routes");
-const uploadRoutes = require("./src/routes/upload");
-const quoteRoutes = require("./src/routes/quote");
-const cookieParser = require("cookie-parser");
-const adminRoutes = require("./src/routes/adminRoutes");
-const authRoutes = require("./src/routes/authRoutes");
+import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import router from "./src/routes/Routes.js";
+import uploadRoutes from "./src/routes/upload.js";
+import quoteRoutes from "./src/routes/quote.js";
+import cookieParser from "cookie-parser";
+import adminRoutes from "./src/routes/adminRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+
+dotenv.config();
 console.log("Upload routes loaded");
 
 const app = express();

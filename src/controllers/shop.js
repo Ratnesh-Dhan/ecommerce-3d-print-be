@@ -29,6 +29,4 @@ const getDesigns = (req, res) => {
   }
 };
 
-module.exports = {
-  getDesigns,
-};
+export { getDesigns };
