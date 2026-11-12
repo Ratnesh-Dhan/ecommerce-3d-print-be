@@ -85,7 +85,7 @@ const createNewUser = async (req, res) => {
     console.log("creating user");
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("hashing password");
-    const newUser = await createUser({
+    const [newUser] = await createUser({
       name: name,
       email: email,
       password: hashedPassword,
@@ -109,12 +109,15 @@ const createNewUser = async (req, res) => {
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
-        role: newUser.role,
       },
     });
   } catch (error) {
     console.error("CREATE USER ERROR:", error);
-
+    if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
+      return res
+        .status(400)
+        .json({ message: "An account with this email already exists." });
+    }
     return res.status(500).json({
       message: error.message,
     });
