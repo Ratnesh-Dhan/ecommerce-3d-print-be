@@ -1,3 +1,14 @@
+process.on('uncaughtException', (err) => {
+  console.error('CRASH - Uncaught Exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('CRASH - Unhandled Rejection:', reason);
+  process.exit(1);
+});
+
+
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
