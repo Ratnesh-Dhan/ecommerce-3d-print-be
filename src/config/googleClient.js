@@ -1,5 +1,7 @@
-require("dotenv").config();
-const { google } = require("googleapis");
+import dotenv from "dotenv";
+import { google } from "googleapis";
+
+dotenv.config();
 
 // const auth = new google.auth.GoogleAuth({
 //   keyFile: process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -13,4 +15,4 @@ const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
-module.exports = auth;
+export default auth;

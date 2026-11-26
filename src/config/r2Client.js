@@ -1,4 +1,4 @@
-const { S3Client } = require("@aws-sdk/client-s3");
+import { S3Client } from "@aws-sdk/client-s3";
 
 const r2 = new S3Client({
     region: "auto",
@@ -9,4 +9,4 @@ const r2 = new S3Client({
     },
 });
 
-module.exports = r2;
+export default r2;

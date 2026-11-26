@@ -30,3 +30,5 @@ Thumbs.db
 # Build directories (if using TypeScript or React)
 dist/
 build/
+database.db
+src/db/migrations/

@@ -1,4 +1,4 @@
-const { addContactRow } = require("../services/contactSheet");
+import { addContactRow } from "../services/contactSheet.js";
 const contact = async (req, res) => {
   try {
     const { name, email, message } = req.body;
@@ -17,6 +17,4 @@ const contact = async (req, res) => {
   }
 };
 
-module.exports = {
-  contact,
-};
+export { contact };

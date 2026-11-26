@@ -1,6 +1,8 @@
-require("dotenv").config();
-const { google } = require("googleapis");
-const auth = require("../config/googleClient");
+import dotenv from "dotenv";
+import { google } from "googleapis";
+import auth from "../config/googleClient.js";
+
+dotenv.config();
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const RANGE = "Sheet1!A:L";
@@ -59,4 +61,4 @@ const addRow = async (data) => {
   });
 };
 
-module.exports = { addRow };
+export { addRow };
