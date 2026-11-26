@@ -85,10 +85,24 @@ const createNewUser = async (req, res) => {
     console.log("creating user");
     const hashedPassword = await bcrypt.hash(password, 10);
     console.log("hashing password");
+    // const [newUser] = await createUser({
+    //   name: name,
+    //   email: email,
+    //   password: hashedPassword,
+    // });
+    const normalizedEmail = email.trim().toLowerCase();
+    const initialAdminEmail = process.env.INITIAL_ADMIN_EMAIL
+      ?.trim()
+      .toLowerCase();
+
+    const role =
+      initialAdminEmail === normalizedEmail ? "admin" : "user";
+
     const [newUser] = await createUser({
-      name: name,
-      email: email,
+      name: name.trim(),
+      email: normalizedEmail,
       password: hashedPassword,
+      role,
     });
     console.log("new user", newUser);
     const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, {
@@ -109,6 +123,7 @@ const createNewUser = async (req, res) => {
         id: newUser.id,
         name: newUser.name,
         email: newUser.email,
+        role: newUser.role,
       },
     });
   } catch (error) {
@@ -124,4 +139,13 @@ const createNewUser = async (req, res) => {
   }
 };
 
-export { login, logout, createNewUser };
+const getCurrentUser = (req, res) => {
+  const { id, name, email, role } = req.user;
+
+  return res.json({
+    success: true,
+    user: { id, name, email, role },
+  });
+};
+
+export { login, logout, createNewUser, getCurrentUser };
