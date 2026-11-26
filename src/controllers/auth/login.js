@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import {
   getUserByEmail,
+  getUserById,
   updateUserLastLogin,
   createUser,
 } from "../../db/queries.js";
@@ -76,7 +77,7 @@ const logout = async (req, res) => {
 const createNewUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    console.log(name, email, password);
+    // console.log(name, email, password);
     const [user] = await getUserByEmail(email);
     if (user) {
       console.log("user already exists");
@@ -108,7 +109,7 @@ const createNewUser = async (req, res) => {
     const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    console.log("token", token);
+    // console.log("token", token);
     res.cookie("accessToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -139,12 +140,26 @@ const createNewUser = async (req, res) => {
   }
 };
 
-const getCurrentUser = (req, res) => {
-  const { id, name, email, role } = req.user;
+// 
+// console.log("Current user structure:", {
+//   isArray: Array.isArray(req.user),
+//   keys: Object.keys(req.user ?? {}),
+// });
+const getCurrentUser = async (req, res) => {
+  console.log("Current user structure:", {
+    isArray: Array.isArray(req.user),
+    keys: Object.keys(req.user ?? {}),
+  });
+  const user = req.user;
 
   return res.json({
     success: true,
-    user: { id, name, email, role },
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
   });
 };
 
